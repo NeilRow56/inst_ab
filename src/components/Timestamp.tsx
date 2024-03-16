@@ -36,6 +36,7 @@ function Timestamp({ createdAt, className }: Props) {
           return nextFormatter?.(value, unit, suffix, epochMiliseconds)
         }
       }}
+      suppressHydrationWarning
     />
   )
 }
