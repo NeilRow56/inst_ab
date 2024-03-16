@@ -136,6 +136,7 @@ export default function Comments({
                   <input
                     type="text"
                     placeholder="Add a comment..."
+                    disabled={isPending}
                     className="flex-1 border-none  bg-transparent text-sm font-medium placeholder-neutral-500 focus:outline-none dark:text-white dark:placeholder-neutral-400"
                     {...field}
                   />

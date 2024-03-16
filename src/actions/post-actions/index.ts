@@ -6,8 +6,10 @@ import {
   BookmarkSchema,
   CreateCommentSchema,
   CreatePostSchema,
+  DeleteCommentSchema,
   DeletePostSchema,
   LikeSchema,
+  UpdatePostSchema,
 } from '@/schemas/posts'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
@@ -247,4 +249,78 @@ export async function createComment(
   } catch (error) {
     return { message: 'Database Error: Failed to Create Comment.' }
   }
+}
+
+export async function deleteComment(formData: FormData) {
+  const userId = await getUserId()
+
+  const { id } = DeleteCommentSchema.parse({
+    id: formData.get('id'),
+  })
+
+  const comment = await db.comment.findUnique({
+    where: {
+      id,
+      userId,
+    },
+  })
+
+  if (!comment) {
+    throw new Error('Comment not found')
+  }
+
+  try {
+    await db.comment.delete({
+      where: {
+        id,
+      },
+    })
+    revalidatePath('/dashboard')
+    return { message: 'Deleted Comment.' }
+  } catch (error) {
+    return { message: 'Database Error: Failed to Delete Comment.' }
+  }
+}
+
+export async function updatePost(values: z.infer<typeof UpdatePostSchema>) {
+  const userId = await getUserId()
+
+  const validatedFields = UpdatePostSchema.safeParse(values)
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Post.',
+    }
+  }
+
+  const { id, fileUrl, caption } = validatedFields.data
+
+  const post = await db.post.findUnique({
+    where: {
+      id,
+      userId,
+    },
+  })
+
+  if (!post) {
+    throw new Error('Post not found')
+  }
+
+  try {
+    await db.post.update({
+      where: {
+        id,
+      },
+      data: {
+        fileUrl,
+        caption,
+      },
+    })
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Post.' }
+  }
+
+  revalidatePath('/dashboard')
+  redirect('/dashboard')
 }
