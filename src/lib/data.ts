@@ -105,3 +105,71 @@ export async function fetchPostsByUsername(firstName: string, postId?: string) {
     throw new Error('Failed to fetch posts')
   }
 }
+
+export async function fetchProfile(email: string) {
+  try {
+    const data = await db.user.findUnique({
+      where: {
+        email,
+      },
+      include: {
+        posts: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
+        saved: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
+      },
+    })
+
+    return data
+  } catch (error) {
+    console.error('Database Error:', error)
+    throw new Error('Failed to fetch profile')
+  }
+}
+
+export async function fetchSavedPostsByEmail(email: string) {
+  try {
+    const data = await db.savedPost.findMany({
+      where: {
+        user: {
+          email,
+        },
+      },
+      include: {
+        post: {
+          include: {
+            comments: {
+              include: {
+                user: true,
+              },
+              orderBy: {
+                createdAt: 'desc',
+              },
+            },
+            likes: {
+              include: {
+                user: true,
+              },
+            },
+            savedBy: true,
+            user: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    })
+
+    return data
+  } catch (error) {
+    console.error('Database Error:', error)
+    throw new Error('Failed to fetch saved posts')
+  }
+}
