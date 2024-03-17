@@ -37,6 +37,9 @@ async function SinglePost({ id }: { id: string }) {
             src={post.fileUrl}
             alt="Post preview"
             fill
+            sizes="(max-width: 768px) 100vw,
+              (max-width: 1200px) 50vw,
+              33vw"
             className="object-cover md:rounded-l-md"
           />
         </div>

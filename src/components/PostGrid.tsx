@@ -23,6 +23,10 @@ function PostsGrid({ posts }: { posts: PostWithExtras[] | undefined }) {
           <Image
             src={post.fileUrl}
             fill
+            sizes="(max-width: 768px) 100vw,
+              (max-width: 1200px) 50vw,
+              33vw"
+            priority
             alt="Post preview"
             className="-z-10 object-cover transition group-hover:blur-[2px] group-hover:brightness-90 group-hover:filter"
           />

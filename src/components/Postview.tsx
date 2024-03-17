@@ -67,7 +67,7 @@ function PostView({ id, post }: { id: string; post: PostWithExtras }) {
           <div className="mt-auto hidden border-b p-2.5 px-2 md:block">
             <PostActions post={post} userId={user?.id} />
             <time className="text-[11px]  font-medium uppercase text-zinc-500">
-              {new Date(post.createdAt).toLocaleDateString('en-US', {
+              {new Date(post.createdAt).toLocaleDateString('en-GB', {
                 month: 'long',
                 day: 'numeric',
               })}
@@ -84,7 +84,10 @@ function PostView({ id, post }: { id: string; post: PostWithExtras }) {
           <Image
             src={post.fileUrl}
             fill
-            objectFit="cover"
+            sizes="(max-width: 768px) 100vw,
+              (max-width: 1200px) 50vw,
+              33vw"
+            priority
             alt="Post Image"
             className="object-cover md:rounded-l-md"
           />
